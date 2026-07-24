@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CartItem } from '../types';
+import { CartItem, DetailedOrder, UserProfile } from '../types';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -9,6 +9,8 @@ interface CartDrawerProps {
   onToggleSubscription: (productId: string) => void;
   onRemoveItem: (productId: string) => void;
   onClearCart: () => void;
+  onAddOrder?: (order: DetailedOrder) => void;
+  user?: UserProfile | null;
 }
 
 export const CartDrawer: React.FC<CartDrawerProps> = ({
@@ -19,6 +21,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onToggleSubscription,
   onRemoveItem,
   onClearCart,
+  onAddOrder,
+  user,
 }) => {
   const [checkingOut, setCheckingOut] = useState(false);
   const [completedOrder, setCompletedOrder] = useState(false);
@@ -37,7 +41,60 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
   const handleCheckout = () => {
     setCheckingOut(true);
+
+    const newOrder: DetailedOrder = {
+      id: `PF-${Math.floor(10000 + Math.random() * 90000)}`,
+      date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+      estimatedDelivery: 'Expected in 2-3 Business Days',
+      status: 'Processing',
+      trackingNumber: `DHL-EXPRESS-${Math.floor(100000000 + Math.random() * 900000000)}`,
+      carrier: 'DHL Express Air',
+      items: cart.map((i) => ({
+        productId: i.product.id,
+        productName: i.product.name,
+        imageUrl: i.product.imageUrl,
+        quantity: i.quantity,
+        price: i.isSubscription ? i.product.price * 0.85 : i.product.price,
+        isSubscription: i.isSubscription,
+      })),
+      subtotal,
+      shippingCost: shipping,
+      total: grandTotal,
+      shippingAddress: user?.address
+        ? { name: user.name, ...user.address }
+        : {
+            name: 'Sarah Connor',
+            street: '742 Evergreen Terrace, Suite 4B',
+            city: 'San Francisco',
+            state: 'CA',
+            zip: '94107',
+          },
+      trackingSteps: [
+        {
+          status: 'Order Confirmed',
+          description: 'Payment processed and order routed to clean room formulation lab.',
+          timestamp: 'Just Now',
+          completed: true,
+        },
+        {
+          status: 'Botanical Quality Audit',
+          description: 'Standardized potency testing & hermetic sachet sealing.',
+          timestamp: 'Scheduled for Today',
+          completed: false,
+        },
+        {
+          status: 'Dispatched to DHL Express',
+          description: 'Package queued for courier pickup.',
+          timestamp: 'Scheduled for Tomorrow',
+          completed: false,
+        },
+      ],
+    };
+
     setTimeout(() => {
+      if (onAddOrder) {
+        onAddOrder(newOrder);
+      }
       setCheckingOut(false);
       setCompletedOrder(true);
       onClearCart();

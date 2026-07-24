@@ -1,6 +1,6 @@
 import React from 'react';
 import { PRODUCTS } from '../data/products';
-import { Product } from '../types';
+import { Product, UserProfile } from '../types';
 
 interface MenuDrawerProps {
   isOpen: boolean;
@@ -9,6 +9,9 @@ interface MenuDrawerProps {
   onTakeQuiz: () => void;
   onSelectProduct: (product: Product) => void;
   onOpenNewsletter?: () => void;
+  onOpenDrLimChat?: () => void;
+  user?: UserProfile | null;
+  onOpenAuthModal?: () => void;
 }
 
 export const MenuDrawer: React.FC<MenuDrawerProps> = ({
@@ -18,6 +21,9 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
   onTakeQuiz,
   onSelectProduct,
   onOpenNewsletter,
+  onOpenDrLimChat,
+  user,
+  onOpenAuthModal,
 }) => {
 
   if (!isOpen) return null;
@@ -42,21 +48,46 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
           </div>
 
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
-            <button
-              onClick={() => {
-                onTakeQuiz();
-                onClose();
-              }}
-              className="w-full bg-[#1A1A1A] text-[#F5F2ED] p-4 flex items-center justify-between hover:bg-black transition-colors text-left"
-            >
-              <div>
-                <span className="text-[9px] uppercase font-bold tracking-[0.2em] text-[#F5F2ED]/70 block">
-                  Interactive Analysis
-                </span>
-                <span className="font-serif text-lg">Formulation Quiz</span>
-              </div>
-              <span className="material-symbols-outlined text-base">arrow_forward</span>
-            </button>
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  onTakeQuiz();
+                  onClose();
+                }}
+                className="w-full bg-[#1A1A1A] text-[#F5F2ED] p-4 flex items-center justify-between hover:bg-black transition-colors text-left"
+              >
+                <div>
+                  <span className="text-[9px] uppercase font-bold tracking-[0.2em] text-[#F5F2ED]/70 block">
+                    Interactive Analysis
+                  </span>
+                  <span className="font-serif text-lg">Formulation Quiz</span>
+                </div>
+                <span className="material-symbols-outlined text-base">arrow_forward</span>
+              </button>
+
+              {onOpenDrLimChat && (
+                <button
+                  onClick={() => {
+                    onOpenDrLimChat();
+                    onClose();
+                  }}
+                  className="w-full bg-[#EAE6DF] border border-black/20 text-[#1A1A1A] p-4 flex items-center justify-between hover:border-black transition-all text-left"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-[#1A1A1A] text-[#F5F2ED] flex items-center justify-center font-serif text-xs font-bold">
+                      DL
+                    </div>
+                    <div>
+                      <span className="text-[9px] uppercase font-bold tracking-[0.2em] text-[#1A1A1A]/70 block">
+                        Live AI Consultation
+                      </span>
+                      <span className="font-serif text-base font-normal">Chat with Dr. Lim</span>
+                    </div>
+                  </div>
+                  <span className="w-2 h-2 bg-emerald-600 rounded-full"></span>
+                </button>
+              )}
+            </div>
 
             {/* Shop Categories */}
             <div>
@@ -130,12 +161,21 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
               )}
               <button
                 onClick={() => {
-                  onSelectTab('account');
+                  if (user) {
+                    onSelectTab('account');
+                  } else if (onOpenAuthModal) {
+                    onOpenAuthModal();
+                  } else {
+                    onSelectTab('account');
+                  }
                   onClose();
                 }}
-                className="w-full text-left py-2 text-base font-serif text-[#1A1A1A] hover:italic"
+                className="w-full text-left py-2 text-base font-serif text-[#1A1A1A] hover:italic flex items-center justify-between"
               >
-                Account Archive
+                <span>{user ? `Profile (${user.name})` : 'Log In / Member Portal'}</span>
+                <span className="text-[9px] font-bold uppercase tracking-widest border border-black/20 px-2 py-0.5 bg-[#EAE6DF]">
+                  {user ? 'Profile' : 'Log In'}
+                </span>
               </button>
 
             </div>

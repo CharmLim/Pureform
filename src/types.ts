@@ -52,12 +52,57 @@ export interface QuizState {
   ageGroup: string;
 }
 
-export interface Order {
+export interface OrderTrackingStep {
+  status: string;
+  description: string;
+  timestamp: string;
+  completed: boolean;
+}
+
+export interface OrderItem {
+  productId: string;
+  productName: string;
+  imageUrl: string;
+  quantity: number;
+  price: number;
+  isSubscription: boolean;
+}
+
+export interface DetailedOrder {
   id: string;
   date: string;
-  items: CartItem[];
+  estimatedDelivery?: string;
+  status: 'Processing' | 'Formulating' | 'In Transit' | 'Out for Delivery' | 'Delivered';
+  trackingNumber: string;
+  carrier: string;
+  items: OrderItem[];
+  subtotal: number;
+  shippingCost: number;
   total: number;
-  status: 'Processing' | 'Shipped' | 'Delivered';
+  shippingAddress: {
+    name: string;
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
+  trackingSteps: OrderTrackingStep[];
+}
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  avatarInitials: string;
+  memberSince: string;
+  tier: string;
+  streakDays: number;
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
 }
 
 export interface NewsletterSubscription {

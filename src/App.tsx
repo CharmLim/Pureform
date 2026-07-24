@@ -23,9 +23,12 @@ import { InfoModal } from './components/InfoModal';
 import { MenuDrawer } from './components/MenuDrawer';
 import { NewsletterSection } from './components/NewsletterSection';
 import { NewsletterModal } from './components/NewsletterModal';
+import { DrLimChat, FloatingChatWidget } from './components/DrLimChat';
+import { AuthModal } from './components/AuthModal';
 import { PRODUCTS } from './data/products';
+import { DEMO_USER, INITIAL_MOCK_ORDERS } from './data/mockOrders';
 
-import { Product, CartItem, JournalArticle } from './types';
+import { Product, CartItem, JournalArticle, UserProfile, DetailedOrder } from './types';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -38,10 +41,30 @@ export default function App() {
     }
   });
 
+  const [user, setUser] = useState<UserProfile | null>(() => {
+    try {
+      const saved = localStorage.getItem('pureform_user');
+      return saved ? JSON.parse(saved) : DEMO_USER;
+    } catch {
+      return DEMO_USER;
+    }
+  });
+
+  const [orders, setOrders] = useState<DetailedOrder[]>(() => {
+    try {
+      const saved = localStorage.getItem('pureform_orders');
+      return saved ? JSON.parse(saved) : INITIAL_MOCK_ORDERS;
+    } catch {
+      return INITIAL_MOCK_ORDERS;
+    }
+  });
+
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isNewsletterOpen, setIsNewsletterOpen] = useState(false);
+  const [isDrLimChatOpen, setIsDrLimChatOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const [selectedArticle, setSelectedArticle] = useState<JournalArticle | null>(null);
@@ -55,6 +78,14 @@ export default function App() {
     }
   }, [cart]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem('pureform_orders', JSON.stringify(orders));
+    } catch {
+      // ignore storage errors
+    }
+  }, [orders]);
+
   const handleAddToCart = (product: Product, isSubscription: boolean = true) => {
     setCart((prevCart) => {
       const existingIndex = prevCart.findIndex((item) => item.product.id === product.id);
@@ -67,6 +98,30 @@ export default function App() {
       return [...prevCart, { product, quantity: 1, isSubscription }];
     });
     setIsCartOpen(true);
+  };
+
+  const handleLoginSuccess = (loggedInUser: UserProfile) => {
+    setUser(loggedInUser);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    try {
+      localStorage.removeItem('pureform_user');
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleAddOrder = (newOrder: DetailedOrder) => {
+    setOrders((prev) => [newOrder, ...prev]);
+  };
+
+  const handleReorder = (orderToReorder: DetailedOrder) => {
+    orderToReorder.items.forEach((item) => {
+      const foundProd = PRODUCTS.find((p) => p.id === item.productId) || PRODUCTS[0];
+      handleAddToCart(foundProd, item.isSubscription);
+    });
   };
 
   const handleUpdateQuantity = (productId: string, delta: number) => {
@@ -114,6 +169,9 @@ export default function App() {
         setActiveTab={setActiveTab}
         onTakeQuiz={() => setIsQuizOpen(true)}
         onOpenNewsletter={() => setIsNewsletterOpen(true)}
+        onOpenDrLimChat={() => setIsDrLimChatOpen(true)}
+        user={user}
+        onOpenAuthModal={() => setIsAuthModalOpen(true)}
       />
 
       {/* Main Content Body */}
@@ -154,14 +212,28 @@ export default function App() {
           </div>
         )}
 
-        {activeTab === 'account' && <AccountView />}
+        {activeTab === 'account' && (
+          <AccountView
+            user={user}
+            orders={orders}
+            onLoginClick={() => setIsAuthModalOpen(true)}
+            onLogout={handleLogout}
+            onReorder={handleReorder}
+            activeSubscriptionProduct={PRODUCTS[0]}
+            onOpenNewsletter={() => setIsNewsletterOpen(true)}
+          />
+        )}
       </main>
 
       {/* Footer */}
       <Footer
         onOpenModal={setInfoModalType}
         onOpenNewsletter={() => setIsNewsletterOpen(true)}
+        onOpenDrLimChat={() => setIsDrLimChatOpen(true)}
       />
+
+      {/* Floating Chat Widget Button */}
+      <FloatingChatWidget onOpenChat={() => setIsDrLimChatOpen(true)} />
 
       {/* Bottom Mobile Nav */}
       <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -175,6 +247,8 @@ export default function App() {
         onToggleSubscription={handleToggleSubscription}
         onRemoveItem={handleRemoveItem}
         onClearCart={handleClearCart}
+        onAddOrder={handleAddOrder}
+        user={user}
       />
 
       <MenuDrawer
@@ -184,6 +258,9 @@ export default function App() {
         onTakeQuiz={() => setIsQuizOpen(true)}
         onSelectProduct={setSelectedProduct}
         onOpenNewsletter={() => setIsNewsletterOpen(true)}
+        onOpenDrLimChat={() => setIsDrLimChatOpen(true)}
+        user={user}
+        onOpenAuthModal={() => setIsAuthModalOpen(true)}
       />
 
       <QuizModal
@@ -197,12 +274,23 @@ export default function App() {
         onClose={() => setIsNewsletterOpen(false)}
       />
 
+      <DrLimChat
+        isOpen={isDrLimChatOpen}
+        onClose={() => setIsDrLimChatOpen(false)}
+        onOpenQuiz={() => setIsQuizOpen(true)}
+      />
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
+
       <ProductDetailModal
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}
         onAddToCart={handleAddToCart}
       />
-
 
       <JournalDetailModal
         article={selectedArticle}

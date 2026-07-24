@@ -1,4 +1,5 @@
 import React from 'react';
+import { UserProfile } from '../types';
 
 interface HeaderProps {
   onOpenCart: () => void;
@@ -8,6 +9,9 @@ interface HeaderProps {
   setActiveTab: (tab: string) => void;
   onTakeQuiz: () => void;
   onOpenNewsletter?: () => void;
+  onOpenDrLimChat?: () => void;
+  user?: UserProfile | null;
+  onOpenAuthModal?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -18,6 +22,9 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveTab,
   onTakeQuiz,
   onOpenNewsletter,
+  onOpenDrLimChat,
+  user,
+  onOpenAuthModal,
 }) => {
 
   return (
@@ -68,10 +75,20 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="flex items-center space-x-4">
+          {onOpenDrLimChat && (
+            <button
+              onClick={onOpenDrLimChat}
+              className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#1A1A1A] hover:opacity-50 transition-opacity flex items-center gap-1 bg-[#EAE6DF] border border-black/20 px-2.5 py-1"
+            >
+              <span className="w-1.5 h-1.5 bg-emerald-600 rounded-full"></span>
+              <span>Ask Dr. Lim</span>
+            </button>
+          )}
+
           {onOpenNewsletter && (
             <button
               onClick={onOpenNewsletter}
-              className="hidden sm:inline-block text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity text-[#1A1A1A] border-b border-black/20 pb-0.5"
+              className="hidden md:inline-block text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity text-[#1A1A1A] border-b border-black/20 pb-0.5"
             >
               Newsletter Dispatch
             </button>
@@ -84,6 +101,26 @@ export const Header: React.FC<HeaderProps> = ({
             Take Quiz
           </button>
 
+          {/* Log In / Profile Button */}
+          {user ? (
+            <button
+              onClick={() => setActiveTab('account')}
+              className="text-[10px] uppercase tracking-[0.15em] font-bold text-[#1A1A1A] hover:opacity-60 transition-opacity flex items-center space-x-1 bg-[#EAE6DF] border border-black/20 px-2 py-1"
+            >
+              <div className="w-4 h-4 bg-[#1A1A1A] text-[#F5F2ED] font-serif text-[8px] flex items-center justify-center font-bold">
+                {user.avatarInitials}
+              </div>
+              <span className="hidden sm:inline-block max-w-[80px] truncate">{user.name.split(' ')[0]}</span>
+            </button>
+          ) : (
+            <button
+              onClick={onOpenAuthModal}
+              className="text-[10px] uppercase tracking-[0.15em] font-bold text-[#1A1A1A] hover:opacity-60 transition-opacity flex items-center space-x-1"
+            >
+              <span className="material-symbols-outlined text-lg">person</span>
+              <span className="hidden sm:inline-block">Log In</span>
+            </button>
+          )}
 
           <button
             onClick={onOpenCart}
