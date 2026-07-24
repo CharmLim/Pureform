@@ -1,0 +1,6 @@
+{
+  "name": "PureForm Health",
+  "description": "Tailored supplements for your cycle, skin, and soul. Wellness, simplified.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
