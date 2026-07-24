@@ -2,9 +2,10 @@ import React from 'react';
 
 interface FooterProps {
   onOpenModal: (type: string) => void;
+  onOpenNewsletter?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenModal }) => {
+export const Footer: React.FC<FooterProps> = ({ onOpenModal, onOpenNewsletter }) => {
   return (
     <footer className="w-full py-16 bg-[#F5F2ED] flex flex-col items-center justify-center space-y-8 px-6 text-center pb-28 md:pb-16 border-t border-black/10">
       <div className="flex items-center gap-4">
@@ -13,12 +14,21 @@ export const Footer: React.FC<FooterProps> = ({ onOpenModal }) => {
       </div>
 
       <nav className="flex flex-wrap justify-center gap-x-8 gap-y-3">
+        {onOpenNewsletter && (
+          <button
+            onClick={onOpenNewsletter}
+            className="text-[10px] uppercase tracking-[0.2em] text-[#1A1A1A] hover:opacity-50 transition-opacity font-bold border-b border-black pb-0.5"
+          >
+            Bi-Weekly Newsletter
+          </button>
+        )}
         <button
           onClick={() => onOpenModal('privacy')}
           className="text-[10px] uppercase tracking-[0.2em] text-[#1A1A1A] hover:opacity-50 transition-opacity font-medium border-b border-black/20 pb-0.5"
         >
           Privacy Protocol
         </button>
+
         <button
           onClick={() => onOpenModal('terms')}
           className="text-[10px] uppercase tracking-[0.2em] text-[#1A1A1A] hover:opacity-50 transition-opacity font-medium border-b border-black/20 pb-0.5"

@@ -8,6 +8,7 @@ interface MenuDrawerProps {
   onSelectTab: (tab: string) => void;
   onTakeQuiz: () => void;
   onSelectProduct: (product: Product) => void;
+  onOpenNewsletter?: () => void;
 }
 
 export const MenuDrawer: React.FC<MenuDrawerProps> = ({
@@ -16,7 +17,9 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
   onSelectTab,
   onTakeQuiz,
   onSelectProduct,
+  onOpenNewsletter,
 }) => {
+
   if (!isOpen) return null;
 
   return (
@@ -113,6 +116,18 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
               >
                 Health Journal
               </button>
+              {onOpenNewsletter && (
+                <button
+                  onClick={() => {
+                    onOpenNewsletter();
+                    onClose();
+                  }}
+                  className="w-full text-left py-2 text-base font-serif text-[#1A1A1A] hover:italic flex items-center justify-between"
+                >
+                  <span>Bi-Weekly Newsletter</span>
+                  <span className="text-[9px] uppercase tracking-widest font-bold border border-black/20 px-1.5 py-0.5">Free</span>
+                </button>
+              )}
               <button
                 onClick={() => {
                   onSelectTab('account');
@@ -122,6 +137,7 @@ export const MenuDrawer: React.FC<MenuDrawerProps> = ({
               >
                 Account Archive
               </button>
+
             </div>
           </div>
 

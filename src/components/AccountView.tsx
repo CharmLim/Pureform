@@ -80,7 +80,53 @@ export const AccountView: React.FC = () => {
         </div>
       </div>
 
+      {/* Bi-Weekly Newsletter & Editorial Subscription */}
+      <div className="bg-[#F5F2ED] p-6 sm:p-8 border border-black/15">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-black/10 mb-4 gap-2">
+          <div>
+            <span className="text-[9px] font-bold uppercase tracking-[0.25em] text-[#1A1A1A] border border-black/20 px-2 py-0.5 bg-[#EAE6DF]">
+              Editorial Publication
+            </span>
+            <h4 className="font-serif text-xl text-[#1A1A1A] mt-2 font-normal">Bi-Weekly Botanical & Health Trends Newsletter</h4>
+          </div>
+          <span className="text-[10px] uppercase tracking-wider font-mono text-[#1A1A1A]/60">
+            Frequency: 2nd & 4th Tuesday
+          </span>
+        </div>
+
+        <p className="text-xs text-[#1A1A1A]/70 mb-4 font-light leading-relaxed">
+          Receive our bi-weekly editorial dispatches covering clinical herbal research, recent longevity & hormonal health trends, and standardized ingredient monographs.
+        </p>
+
+        <div className="bg-[#EAE6DF] p-4 border border-black/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-xs font-bold uppercase tracking-wider text-[#1A1A1A]">
+              Subscribed Topics:
+            </p>
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              <span className="bg-[#F5F2ED] border border-black/15 text-[#1A1A1A] text-[9px] uppercase tracking-wider px-2.5 py-0.5">
+                ✓ Herbs & Botanical Spotlights
+              </span>
+              <span className="bg-[#F5F2ED] border border-black/15 text-[#1A1A1A] text-[9px] uppercase tracking-wider px-2.5 py-0.5">
+                ✓ Recent Health Trends
+              </span>
+              <span className="bg-[#F5F2ED] border border-black/15 text-[#1A1A1A] text-[9px] uppercase tracking-wider px-2.5 py-0.5">
+                ✓ Clinical Ingredients
+              </span>
+            </div>
+          </div>
+
+          <a
+            href="#newsletter-section"
+            className="text-[10px] uppercase font-bold tracking-[0.2em] text-[#1A1A1A] border-b border-black pb-0.5 hover:opacity-50 transition-opacity flex-shrink-0"
+          >
+            Manage Preferences →
+          </a>
+        </div>
+      </div>
+
       {/* Recent Orders */}
+
       <div className="bg-[#F5F2ED] p-6 sm:p-8 border border-black/15">
         <h4 className="font-serif text-xl text-[#1A1A1A] mb-4 font-normal">Dispatch Archive</h4>
         <div className="space-y-3 text-xs text-[#1A1A1A]/80">

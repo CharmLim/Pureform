@@ -59,3 +59,12 @@ export interface Order {
   total: number;
   status: 'Processing' | 'Shipped' | 'Delivered';
 }
+
+export interface NewsletterSubscription {
+  email: string;
+  name?: string;
+  topics: string[];
+  frequency: string;
+  subscribedAt: string;
+}
+

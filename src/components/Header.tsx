@@ -7,6 +7,7 @@ interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onTakeQuiz: () => void;
+  onOpenNewsletter?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -15,8 +16,10 @@ export const Header: React.FC<HeaderProps> = ({
   cartCount,
   activeTab,
   setActiveTab,
-  onTakeQuiz
+  onTakeQuiz,
+  onOpenNewsletter,
 }) => {
+
   return (
     <header className="fixed top-0 w-full z-40 bg-[#F5F2ED]/95 backdrop-blur-md border-b border-black/10 transition-all">
       <div className="flex justify-between items-center px-6 md:px-12 h-16 w-full max-w-7xl mx-auto">
@@ -65,12 +68,22 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         <div className="flex items-center space-x-4">
+          {onOpenNewsletter && (
+            <button
+              onClick={onOpenNewsletter}
+              className="hidden sm:inline-block text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity text-[#1A1A1A] border-b border-black/20 pb-0.5"
+            >
+              Newsletter Dispatch
+            </button>
+          )}
+
           <button
             onClick={onTakeQuiz}
             className="text-[10px] uppercase tracking-[0.2em] font-bold border-b border-[#1A1A1A] pb-0.5 hover:opacity-50 transition-opacity text-[#1A1A1A]"
           >
             Take Quiz
           </button>
+
 
           <button
             onClick={onOpenCart}

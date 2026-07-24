@@ -21,7 +21,10 @@ import { JournalDetailModal } from './components/JournalDetailModal';
 import { AccountView } from './components/AccountView';
 import { InfoModal } from './components/InfoModal';
 import { MenuDrawer } from './components/MenuDrawer';
+import { NewsletterSection } from './components/NewsletterSection';
+import { NewsletterModal } from './components/NewsletterModal';
 import { PRODUCTS } from './data/products';
+
 import { Product, CartItem, JournalArticle } from './types';
 
 export default function App() {
@@ -38,7 +41,9 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isNewsletterOpen, setIsNewsletterOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
   const [selectedArticle, setSelectedArticle] = useState<JournalArticle | null>(null);
   const [infoModalType, setInfoModalType] = useState<string | null>(null);
 
@@ -108,6 +113,7 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onTakeQuiz={() => setIsQuizOpen(true)}
+        onOpenNewsletter={() => setIsNewsletterOpen(true)}
       />
 
       {/* Main Content Body */}
@@ -125,6 +131,7 @@ export default function App() {
             <QualityTrust />
             <Testimonials />
             <JournalSection onSelectArticle={setSelectedArticle} />
+            <NewsletterSection onOpenModal={() => setIsNewsletterOpen(true)} />
           </>
         )}
 
@@ -136,12 +143,14 @@ export default function App() {
               onAddToCart={handleAddToCart}
             />
             <QualityTrust />
+            <NewsletterSection onOpenModal={() => setIsNewsletterOpen(true)} />
           </div>
         )}
 
         {activeTab === 'journal' && (
           <div className="py-8">
             <JournalSection onSelectArticle={setSelectedArticle} />
+            <NewsletterSection onOpenModal={() => setIsNewsletterOpen(true)} />
           </div>
         )}
 
@@ -149,7 +158,10 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <Footer onOpenModal={setInfoModalType} />
+      <Footer
+        onOpenModal={setInfoModalType}
+        onOpenNewsletter={() => setIsNewsletterOpen(true)}
+      />
 
       {/* Bottom Mobile Nav */}
       <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -171,6 +183,7 @@ export default function App() {
         onSelectTab={setActiveTab}
         onTakeQuiz={() => setIsQuizOpen(true)}
         onSelectProduct={setSelectedProduct}
+        onOpenNewsletter={() => setIsNewsletterOpen(true)}
       />
 
       <QuizModal
@@ -179,11 +192,17 @@ export default function App() {
         onAddToCart={handleAddToCart}
       />
 
+      <NewsletterModal
+        isOpen={isNewsletterOpen}
+        onClose={() => setIsNewsletterOpen(false)}
+      />
+
       <ProductDetailModal
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}
         onAddToCart={handleAddToCart}
       />
+
 
       <JournalDetailModal
         article={selectedArticle}
